@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Sussy
 {
@@ -37,8 +38,14 @@ namespace Sussy
         void Update()
         {
             if (Director == null) return;
-            for (int i = 0; i < Director.Feeds.Count && i < 9; i++)
-                if (Input.GetKeyDown(KeyCode.Alpha1 + i)) Director.SwitchFeed(i);
+
+            // Project is set to the new Input System only, so the legacy Input class throws here.
+            var kb = Keyboard.current;
+            if (kb == null) return;
+
+            var keys = new[] { Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4, Key.Digit5 };
+            for (int i = 0; i < Director.Feeds.Count && i < keys.Length; i++)
+                if (kb[keys[i]].wasPressedThisFrame) Director.SwitchFeed(i);
         }
 
         void OnGUI()
